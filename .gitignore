@@ -1,1 +1,2 @@
 workspace.code-workspace
+client/esp32/src/secrets.h
