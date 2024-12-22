@@ -1,2 +1,3 @@
 workspace.code-workspace
 client/esp32_controller/src/secrets.h
+client/esp32_worker/src/secrets.h
