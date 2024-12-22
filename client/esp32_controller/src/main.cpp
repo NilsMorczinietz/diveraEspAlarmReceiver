@@ -4,11 +4,9 @@
 
 #include "secrets.h"
 #include "settings.h"
-#include "led_control.h"
 
 using namespace websockets;
 
-Adafruit_NeoPixel strip(NUM_MAX_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 WebsocketsClient client;
 
 // Function prototypes
@@ -19,9 +17,6 @@ void setupWebSocket();
 void onMessageCallback(WebsocketsMessage message) {
     Serial.print("Got Message: ");
     Serial.println(message.data());
-
-    // Turn on all LEDs regardless of the message content
-    turnOnLEDsCount(strip, 40);
 }
 
 // WebSocket event callback
@@ -44,10 +39,6 @@ void setup() {
     // Setup Wi-Fi and WebSocket
     setupWiFi();
     setupWebSocket();
-
-    // Initialize LED strip
-    strip.begin();
-    strip.show();
 }
 
 void loop() {
