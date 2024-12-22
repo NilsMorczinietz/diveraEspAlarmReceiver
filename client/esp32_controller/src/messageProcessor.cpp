@@ -28,17 +28,29 @@ void actionDefault() {
 
 // Array of keyword-action pairs
 KeywordAction keywordActions[] = {
+    {"Einsatzabruch", actionTestProbe},
+    {"Einsatzabbruch", actionTestProbe},
+    {"Rueckalarm", actionTestProbe},
+    {"RUECKALARM", actionTestProbe},
+
     {"Test", actionTestProbe},
-    {"probe", actionTestProbe},
-    {"F10", actionCritical},
-    {"KZW", actionCritical},
-    {"Leben", actionCritical},
-    {"Menschen", actionCritical},
-    {"Gefahr", actionCritical},
-    {"Rauch", actionCritical},
-    {"Geruch", actionCritical},
+    {"Probe", actionTestProbe},
+    {"P01", actionTestProbe},
+    {"Probealarm", actionTestProbe},
+    {"Infoalarm", actionTestProbe},
+
+    {"Arbeit", actionNonCritical},
+    {"H20", actionNonCritical},
+    {"Kraftstoff", actionNonCritical},
+    
     {"F04", actionNonCritical},
     {"BMA", actionNonCritical},
+
+    {"F10", actionCritical},
+    {"KZW", actionCritical},
+    {"AM03", actionCritical},
+    {"Vollalarm", actionCritical},
+    {"Stadtalarm", actionCritical},
 };
 
 const int numActions = sizeof(keywordActions) / sizeof(keywordActions[0]);
@@ -60,6 +72,7 @@ void processMessage(const String& message) {
     bool matched = false;
     for (int i = 0; i < numActions; i++) {
         if (notificationText.indexOf(keywordActions[i].keyword) >= 0) {
+            Serial.println("Matched keyword: " + keywordActions[i].keyword); // Output the matched keyword
             keywordActions[i].action(); // Call the associated action
             matched = true;
             break; // Exit the loop once a match is found
