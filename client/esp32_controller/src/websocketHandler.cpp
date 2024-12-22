@@ -1,7 +1,8 @@
 #include "WebSocketHandler.h"
-#include "UDPHandler.h"
+// #include "UDPHandler.h"
 #include "settings.h"
 #include "secrets.h"
+#include "MessageProcessor.h"
 
 WebsocketsClient client;
 
@@ -10,7 +11,8 @@ void onMessageCallback(WebsocketsMessage message) {
     Serial.println(message.data());
 
     // Send UDP message to all workers
-    sendUDPMessageToAll("on");
+    // sendUDPMessageToAll("on");
+    processMessage(message.data());
 }
 
 void onEventsCallback(WebsocketsEvent event, String data) {
