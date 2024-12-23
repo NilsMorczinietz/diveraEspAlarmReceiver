@@ -13,13 +13,17 @@ void setup()
   connectWebSocket();
 
   StatusManager::setStatus(Status::active);
+
+  Serial.println("System initialized.");
 }
 
 void loop()
 {
+  pollWebSocket();
+
   handleWifiReconnection();
 
   checkWebSocket();
 
-  delay(10);
+  delay(100);
 }

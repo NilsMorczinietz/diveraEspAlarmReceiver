@@ -51,13 +51,13 @@ void onEventsCallback(WebsocketsEvent event, String data)
 
 void connectWebSocket(const String serverHost)
 {
+    Serial.println("Connecting to WebSocket...");
+
+    client.onMessage(onMessageCallback);
+    client.onEvent(onEventsCallback);
+
     while (!webSocketConnected)
     {
-        Serial.println("Connecting to WebSocket...");
-
-        client.onMessage(onMessageCallback);
-        client.onEvent(onEventsCallback);
-
         if (client.connect(serverHost))
         {
             Serial.println("WebSocket connected!");
