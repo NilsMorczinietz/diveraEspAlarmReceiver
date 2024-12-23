@@ -95,6 +95,13 @@ void handleIncomingPacket()
       turnOffAllLEDs(strip);
       Serial.println("LEDS AUS");
     }
+    else if (message.equalsIgnoreCase("probe"))
+    {
+      blinkAllColors(strip, 5, 200);
+      Serial.println("LEDS BLINKEN");
+      testEachLED(strip, 200, 2);
+      Serial.println("LEDS TESTEN");
+    }
     else
     {
       Serial.println("Unknown command");

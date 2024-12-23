@@ -1,56 +1,92 @@
 #include "MessageProcessor.h"
 #include "UDPHandler.h"
+#include "settings.h"
+
+enum class AlarmStatus {
+    Active,          // No alarm is active
+    Triggert,        // Alarm has been triggered
+    Waiting,         // Waiting for the 2-minute timeout
+    Break,           // min. beak between alarms 
+};
+static AlarmStatus status = AlarmStatus::Active; // Initial status
 
 // Define the actions
-void actionTestProbe() {
-    Serial.println("Action: Test or probe detected.");
-    sendUDPMessageToAll("on");
+void actionProbe() {
+    Serial.println("Action: Probe alarm");
+    sendUDPMessageToAll("probe");
+}
+
+void actionAbort() {
+    Serial.println("Action: Abort alarm");
+    // sendUDPMessageToAll("on");
     // TODO: Implement specific behavior
 }
 
-void actionCritical() {
-    Serial.println("Action: Critical keywords detected (e.g., danger, smoke).");
-    sendUDPMessageToAll("on");
-    // TODO: Implement specific behavior
-}
+void actionAlarm() {
+    if(status != AlarmStatus::Active) {
+        return;
+    }
+    status = AlarmStatus::Triggert;
 
-void actionNonCritical() {
-    Serial.println("Action: Non-critical alert (e.g., F04, BMA).");
+    Serial.println("Action: Alarm");
     sendUDPMessageToAll("on");
-    // TODO: Implement specific behavior
+
+    status = AlarmStatus::Waiting;
+
+    long waitingTime = WAITING_TIME_ALARM * 60 * 1000;
+    delay(waitingTime);
+    sendUDPMessageToAll("off");
+
+    status = AlarmStatus::Break;
+    waitingTime = 20 * 60 * 1000;
+    delay(waitingTime);
 }
 
 void actionDefault() {
-    Serial.println("Action: Default case. No specific keywords detected.");
+    if(status != AlarmStatus::Active) {
+        return;
+    }
+    status = AlarmStatus::Triggert;
+
+    Serial.println("Action: Default");
     sendUDPMessageToAll("on");
-    // TODO: Implement default behavior
+
+    status = AlarmStatus::Waiting;
+
+    long waitingTime = WAITING_TIME_ALARM * 60 * 1000;
+    delay(waitingTime);
+    sendUDPMessageToAll("off");
+
+    status = AlarmStatus::Break;
+    waitingTime = 20 * 60 * 1000;
+    delay(waitingTime);
 }
 
 // Array of keyword-action pairs
 KeywordAction keywordActions[] = {
-    {"Einsatzabruch", actionTestProbe},
-    {"Einsatzabbruch", actionTestProbe},
-    {"Rueckalarm", actionTestProbe},
-    {"RUECKALARM", actionTestProbe},
+    {"Einsatzabruch", actionAbort},
+    {"Einsatzabbruch", actionAbort},
+    {"Rueckalarm", actionAbort},
+    {"RUECKALARM", actionAbort},
 
-    {"Test", actionTestProbe},
-    {"Probe", actionTestProbe},
-    {"P01", actionTestProbe},
-    {"Probealarm", actionTestProbe},
-    {"Infoalarm", actionTestProbe},
+    {"Test", actionProbe},
+    {"Probe", actionProbe},
+    {"P01", actionProbe},
+    {"Probealarm", actionProbe},
+    {"Infoalarm", actionProbe},
 
-    {"Arbeit", actionNonCritical},
-    {"H20", actionNonCritical},
-    {"Kraftstoff", actionNonCritical},
+    {"Arbeit", actionAlarm},
+    {"H20", actionAlarm},
+    {"Kraftstoff", actionAlarm},
     
-    {"F04", actionNonCritical},
-    {"BMA", actionNonCritical},
+    {"F04", actionAlarm},
+    {"BMA", actionAlarm},
 
-    {"F10", actionCritical},
-    {"KZW", actionCritical},
-    {"AM03", actionCritical},
-    {"Vollalarm", actionCritical},
-    {"Stadtalarm", actionCritical},
+    {"F10", actionAlarm},
+    {"KZW", actionAlarm},
+    {"AM03", actionAlarm},
+    {"Vollalarm", actionAlarm},
+    {"Stadtalarm", actionAlarm},
 };
 
 const int numActions = sizeof(keywordActions) / sizeof(keywordActions[0]);
@@ -72,10 +108,10 @@ void processMessage(const String& message) {
     bool matched = false;
     for (int i = 0; i < numActions; i++) {
         if (notificationText.indexOf(keywordActions[i].keyword) >= 0) {
-            Serial.println("Matched keyword: " + keywordActions[i].keyword); // Output the matched keyword
-            keywordActions[i].action(); // Call the associated action
+            Serial.println("Matched keyword: " + keywordActions[i].keyword);
+            keywordActions[i].action();
             matched = true;
-            break; // Exit the loop once a match is found
+            break;
         }
     }
 
