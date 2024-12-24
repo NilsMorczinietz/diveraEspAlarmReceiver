@@ -2,16 +2,14 @@
 #include "wifiManager.h"
 #include "statusManager.h"
 #include "websocketHandler.h"
-
-const int ESP_LED_PIN = 2;
+#include "ledHandler.h"
 
 void setup()
 {
-  pinMode(ESP_LED_PIN, OUTPUT);
-  digitalWrite(ESP_LED_PIN, LOW);
-
   Serial.begin(9600);
   delay(1000);
+  
+  ledOff(Led::esp);
 
   connectToWifi();
 
@@ -19,7 +17,7 @@ void setup()
 
   StatusManager::setStatus(Status::active);
 
-  digitalWrite(ESP_LED_PIN, HIGH);
+  ledOn(Led::esp);
   Serial.println("System initialized.");
 }
 
