@@ -13,6 +13,14 @@ void pingWebSocket()
     }
 }
 
+void pongWebSocket()
+{
+    if (webSocketConnected)
+    {
+        client.pong();
+    }
+}
+
 void pollWebSocket()
 {
     if (webSocketConnected)
@@ -44,6 +52,7 @@ void onEventsCallback(WebsocketsEvent event, String data)
         break;
     case WebsocketsEvent::GotPong:
         Serial.println("Pong received.");
+        pongWebSocket();
         webSocketConnected = true;
         break;
     }

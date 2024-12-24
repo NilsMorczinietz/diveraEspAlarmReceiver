@@ -7,6 +7,15 @@
 using namespace websockets;
 
 /**
+ * @brief Sends a pong response to the WebSocket server.
+ *
+ * This function responds to a received ping message from the WebSocket server.
+ * It is typically used to acknowledge the server's ping and maintain the
+ * WebSocket connection's state.
+ */
+void pongWebSocket();
+
+/**
  * @brief Sends a ping message to the WebSocket server.
  *
  * This function ensures the WebSocket connection is active and sends a
