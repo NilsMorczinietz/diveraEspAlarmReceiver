@@ -3,12 +3,13 @@
 #include "statusManager.h"
 #include "websocketHandler.h"
 #include "ledHandler.h"
+#include "messageProcessor.h"
 
 void setup()
 {
   Serial.begin(9600);
   delay(1000);
-  
+
   ledOff(Led::esp);
 
   connectToWifi();
@@ -39,4 +40,6 @@ void loop()
   }
 
   Serial.println(message);
+
+  processMessage(message);
 }
