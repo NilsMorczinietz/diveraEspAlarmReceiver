@@ -3,6 +3,7 @@
 
 #include <ArduinoWebsockets.h>
 #include "secrets.h"
+#include "ledHandler.h"
 
 using namespace websockets;
 

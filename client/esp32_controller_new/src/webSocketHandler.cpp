@@ -40,10 +40,12 @@ void onEventsCallback(WebsocketsEvent event, String data)
     {
     case WebsocketsEvent::ConnectionOpened:
         Serial.println("WebSocket connection established.");
+        ledOn(Led::esp);
         webSocketConnected = true;
         break;
     case WebsocketsEvent::ConnectionClosed:
         Serial.println("WebSocket connection closed. Attempting to reconnect...");
+        ledOff(Led::esp);
         webSocketConnected = false;
         break;
     case WebsocketsEvent::GotPing:

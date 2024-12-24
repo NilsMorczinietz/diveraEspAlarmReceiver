@@ -13,6 +13,8 @@ void connectToWifi(const char *ssid, const char *password)
         Serial.print(".");
     }
 
+    ledOn(Led::esp);
+
     Serial.println("");
     Serial.print("Connected to ");
     Serial.println(ssid);
@@ -24,6 +26,7 @@ void handleWifiReconnection()
 {
     if (WiFi.status() != WL_CONNECTED)
     {
+        ledOff(Led::esp);
         Serial.println("WiFi connection lost. Reconnecting...");
         connectToWifi();
     }

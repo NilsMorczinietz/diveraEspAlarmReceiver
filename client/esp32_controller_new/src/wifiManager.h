@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include "secrets.h"
+#include "ledHandler.h"
 
 /**
  * @brief Connects to the specified Wi-Fi network.
