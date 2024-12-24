@@ -1,6 +1,6 @@
 #include "udpHandler.h"
 
-WiFiUDP udp;
+static WiFiUDP udp;
 
 const int numWorkers = sizeof(Config::WORKER_IPS) / sizeof(Config::WORKER_IPS[0]);
 

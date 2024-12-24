@@ -1,6 +1,6 @@
 #include "ledHandler.h"
 
-std::bitset<MAX_PINS> initializedPins; // Tracks which pins are initialized
+static std::bitset<MAX_PINS> initializedPins; // Tracks which pins are initialized
 
 void setupPin(unsigned int pin)
 {

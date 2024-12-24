@@ -3,7 +3,7 @@
 static bool webSocketConnected = false;
 static String latestMessage = "";
 
-WebsocketsClient client;
+static WebsocketsClient client;
 
 void pingWebSocket()
 {
