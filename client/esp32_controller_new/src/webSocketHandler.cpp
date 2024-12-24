@@ -1,6 +1,7 @@
 #include "websocketHandler.h"
 
 static bool webSocketConnected = false;
+static String latestMessage = "";
 
 WebsocketsClient client;
 
@@ -22,8 +23,7 @@ void pollWebSocket()
 
 void onMessageCallback(WebsocketsMessage message)
 {
-    Serial.print("Message received: ");
-    Serial.println(message.data());
+    latestMessage = message.data();
 }
 
 void onEventsCallback(WebsocketsEvent event, String data)
@@ -94,4 +94,11 @@ void checkWebSocket(unsigned long interval)
         pingWebSocket();
         pollWebSocket();
     }
+}
+
+String getLatestMessage()
+{
+    String message = latestMessage;
+    latestMessage = "";
+    return message;
 }

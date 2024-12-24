@@ -19,11 +19,20 @@ void setup()
 
 void loop()
 {
-  pollWebSocket();
+  delay(10);
 
   handleWifiReconnection();
 
   checkWebSocket();
 
-  delay(100);
+  pollWebSocket();
+
+  String message = getLatestMessage();
+
+  if (message == "")
+  {
+    return;
+  }
+
+  Serial.println(message);
 }

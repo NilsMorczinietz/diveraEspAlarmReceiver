@@ -65,5 +65,15 @@ void connectWebSocket(const String serverHost = Config::WEBSOCKETS_SERVER_HOST);
  */
 void checkWebSocket(unsigned long interval = 60000);
 
+/**
+ * @brief Retrieves the latest message received via WebSocket.
+ *
+ * This function returns the latest message received from the WebSocket server.
+ * If no message has been received since the last retrieval, it returns an empty string.
+ * After calling this function, the stored message is cleared to avoid processing the same message multiple times.
+ *
+ * @return String - The latest message received, or an empty string if no new message is available.
+ */
+String getLatestMessage();
 
 #endif // WEBSOCKET_HANDLER_H
