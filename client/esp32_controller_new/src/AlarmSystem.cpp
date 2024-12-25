@@ -110,6 +110,7 @@ void AlarmSystem::checkAlarm()
             return;
         }
 
+        sendUDPMessageToAll("off");
         status = Status::waiting;
     }
     else if (status == Status::probeOn)
@@ -131,7 +132,6 @@ void AlarmSystem::checkAlarm()
             return;
         }
 
-        sendUDPMessageToAll("off");
         Serial.println("Action: Alarm: Alarm is off");
 
         status = Status::active;
