@@ -1,9 +1,10 @@
 #include <Arduino.h>
 #include "wifiManager.h"
-#include "statusManager.h"
 #include "websocketHandler.h"
 #include "ledHandler.h"
-#include "messageProcessor.h"
+#include "AlarmSystem.h"
+
+AlarmSystem alarmSystem;
 
 void setup()
 {
@@ -16,7 +17,7 @@ void setup()
 
   connectWebSocket();
 
-  StatusManager::setStatus(Status::active);
+  alarmSystem = AlarmSystem();
 
   ledOn(Led::esp);
   Serial.println("System initialized.");
@@ -30,6 +31,8 @@ void loop()
 
   checkWebSocket();
 
+  alarmSystem.checkAlarm();
+
   pollWebSocket();
 
   String message = getLatestMessage();
@@ -41,5 +44,5 @@ void loop()
 
   Serial.println(message);
 
-  processMessage(message);
+  alarmSystem.handleNewMessage(message);
 }
