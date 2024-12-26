@@ -1,21 +1,23 @@
-#include "UDPHandler.h"
+#include "udpHandler.h"
 
-WiFiUDP udp;
-const char* workerIPs[] = {"192.168.178.105", "192.168.178.106", "192.168.178.107"};
-const unsigned int udpPort = 4210;
-const int numWorkers = sizeof(workerIPs) / sizeof(workerIPs[0]);
+static WiFiUDP udp;
 
-void sendUDPMessageToAll(const String& message) {
-    for (int i = 0; i < numWorkers; i++) {
-        udp.beginPacket(workerIPs[i], udpPort);
+const int numWorkers = sizeof(Config::WORKER_IPS) / sizeof(Config::WORKER_IPS[0]);
+
+void sendUDPMessageToAll(const String &message)
+{
+    for (int i = 0; i < numWorkers; i++)
+    {
+        udp.beginPacket(Config::WORKER_IPS[i], Config::UDP_PORT);
         udp.print(message);
         udp.endPacket();
-        Serial.println("UDP message sent to " + String(workerIPs[i]) + ": " + message);
+        Serial.println("UDP message sent to " + String(Config::WORKER_IPS[i]) + ": " + message);
     }
 }
 
-void sendUDPMessageToSpecific(const String& message, const char* targetIP) {
-    udp.beginPacket(targetIP, udpPort);
+void sendUDPMessageToSpecific(const String &message, const char *targetIP)
+{
+    udp.beginPacket(targetIP, Config::UDP_PORT);
     udp.print(message);
     udp.endPacket();
     Serial.println("UDP message sent to " + String(targetIP) + ": " + message);

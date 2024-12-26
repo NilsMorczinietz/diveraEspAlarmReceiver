@@ -1,17 +1,48 @@
-#include "WiFiSetup.h"
-#include "WebSocketHandler.h"
-#include "UDPHandler.h"
+#include <Arduino.h>
+#include "wifiManager.h"
+#include "websocketHandler.h"
+#include "ledHandler.h"
+#include "AlarmSystem.h"
 
-void setup() {
-    Serial.begin(9600);
-    delay(1000);
+AlarmSystem alarmSystem;
 
-    setupWiFi();
-    setupWebSocket();
+void setup()
+{
+  Serial.begin(9600);
+  delay(1000);
+
+  ledOff(Led::esp);
+
+  connectToWifi();
+
+  connectWebSocket();
+
+  alarmSystem = AlarmSystem();
+
+  ledOn(Led::esp);
+  Serial.println("System initialized.");
 }
 
-void loop() {
-    handleWebSocket();
-    handleWiFiReconnect();
-    keepWebSocketAlive();
+void loop()
+{
+  delay(10);
+
+  handleWifiReconnection();
+
+  checkWebSocket();
+
+  alarmSystem.checkAlarm();
+
+  pollWebSocket();
+
+  String message = getLatestMessage();
+
+  if (message == "")
+  {
+    return;
+  }
+
+  Serial.println(message);
+
+  alarmSystem.handleNewMessage(message);
 }

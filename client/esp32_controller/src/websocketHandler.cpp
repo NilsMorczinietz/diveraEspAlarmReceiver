@@ -1,68 +1,115 @@
-#include "WebSocketHandler.h"
-// #include "UDPHandler.h"
-#include "settings.h"
-#include "secrets.h"
-#include "MessageProcessor.h"
+#include "websocketHandler.h"
 
-WebsocketsClient client;
+static bool webSocketConnected = false;
+static String latestMessage = "";
 
-void onMessageCallback(WebsocketsMessage message) {
-    Serial.print("Message received: ");
-    Serial.println(message.data());
+static WebsocketsClient client;
 
-    // Send UDP message to all workers
-    // sendUDPMessageToAll("on");
-    processMessage(message.data());
-}
-
-void onEventsCallback(WebsocketsEvent event, String data) {
-    switch (event) {
-        case WebsocketsEvent::ConnectionOpened:
-            Serial.println("WebSocket connection established.");
-            break;
-        case WebsocketsEvent::ConnectionClosed:
-            Serial.println("WebSocket connection closed. Attempting to reconnect...");
-            setupWebSocket();
-            break;
-        case WebsocketsEvent::GotPing:
-            Serial.println("Ping received.");
-            break;
-        case WebsocketsEvent::GotPong:
-            Serial.println("Pong received.");
-            break;
+void pingWebSocket()
+{
+    if (webSocketConnected)
+    {
+        client.ping();
     }
 }
 
-void setupWebSocket() {
+void pongWebSocket()
+{
+    if (webSocketConnected)
+    {
+        client.pong();
+    }
+}
+
+void pollWebSocket()
+{
+    if (webSocketConnected)
+    {
+        client.poll();
+    }
+}
+
+void onMessageCallback(WebsocketsMessage message)
+{
+    latestMessage = message.data();
+}
+
+void onEventsCallback(WebsocketsEvent event, String data)
+{
+    switch (event)
+    {
+    case WebsocketsEvent::ConnectionOpened:
+        Serial.println("WebSocket connection established.");
+        ledOn(Led::esp);
+        webSocketConnected = true;
+        break;
+    case WebsocketsEvent::ConnectionClosed:
+        Serial.println("WebSocket connection closed. Attempting to reconnect...");
+        ledOff(Led::esp);
+        webSocketConnected = false;
+        break;
+    case WebsocketsEvent::GotPing:
+        Serial.println("Ping received.");
+        webSocketConnected = true;
+        break;
+    case WebsocketsEvent::GotPong:
+        Serial.println("Pong received.");
+        pongWebSocket();
+        webSocketConnected = true;
+        break;
+    }
+}
+
+void connectWebSocket(const String serverHost)
+{
     Serial.println("Connecting to WebSocket...");
+
     client.onMessage(onMessageCallback);
     client.onEvent(onEventsCallback);
 
-    if (client.connect(WEBSOCKETS_SERVER_HOST)) {
-        Serial.println("WebSocket connected!");
-        client.send("Hello Server");
-        client.ping();
-    } else {
-        Serial.println("WebSocket connection failed.");
-    }
-}
+    while (!webSocketConnected)
+    {
+        if (client.connect(serverHost))
+        {
+            Serial.println("WebSocket connected!");
+            client.send("Hello Server");
+            client.ping();
 
-void handleWebSocket() {
-    if (WiFi.status() == WL_CONNECTED) {
-        if (client.available()) {
-            client.poll();
-        } else {
-            Serial.println("WebSocket not available. Attempting to reconnect...");
-            setupWebSocket();
+            webSocketConnected = true;
+        }
+        else
+        {
+            Serial.println("WebSocket connection failed. Retrying...");
+            delay(1000); // Wait 1 second before retrying
         }
     }
 }
 
-void keepWebSocketAlive() {
-    static unsigned long lastPingTime = 0;
-    if (millis() - lastPingTime >= 60000 && client.available()) {
-        client.ping();
-        Serial.println("Ping sent.");
-        lastPingTime = millis();
+void checkWebSocket(unsigned long interval)
+{
+    static unsigned long lastCheckTime = 0;
+
+    if (millis() - lastCheckTime < interval)
+    {
+        return;
     }
+
+    lastCheckTime = millis();
+
+    if (!webSocketConnected || !client.available())
+    {
+        client.connect(Config::WEBSOCKETS_SERVER_HOST);
+    }
+    else
+    {
+        pingWebSocket();
+        pollWebSocket();
+    }
+}
+
+String getLatestMessage()
+{
+    String message = latestMessage;
+    latestMessage = "";
+    return message;
 }
