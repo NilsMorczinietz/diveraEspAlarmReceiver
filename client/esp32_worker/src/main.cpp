@@ -4,6 +4,7 @@
 #include "secrets.h" // Contains WIFI_SSID and WIFI_PASSWORD
 #include "led_control.h"
 #include "settings.h"
+#include "ledHandler.h"
 
 #define DEBUG true
 
@@ -43,6 +44,7 @@ void checkWiFiConnection()
 {
   if (WiFi.status() != WL_CONNECTED)
   {
+    ledOff(Led::esp);
     Serial.println("Wi-Fi disconnected. Attempting reconnection...");
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
     while (WiFi.status() != WL_CONNECTED)
@@ -51,6 +53,7 @@ void checkWiFiConnection()
       Serial.println("Reconnecting to Wi-Fi...");
     }
     Serial.println("Reconnected to Wi-Fi.");
+    ledOn(Led::esp);
   }
 }
 
@@ -117,6 +120,8 @@ void handleIncomingPacket()
 
 void setup()
 {
+  ledOff(Led::esp);
+
   Serial.begin(9600);
   setupWiFi();
 
@@ -128,6 +133,7 @@ void setup()
   if (udp.begin(udpPort))
   {
     Serial.println("UDP-Port 4210 erfolgreich geöffnet.");
+    ledOn(Led::esp);
   }
   else
   {
