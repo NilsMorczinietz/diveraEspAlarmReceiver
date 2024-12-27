@@ -29,7 +29,12 @@ void loop()
 
   handleWifiReconnection();
 
-  checkWebSocket();
+  boolean result = checkWebSocket();
+
+  if (!result)
+  {
+    return;
+  }
 
   alarmSystem.checkAlarm();
 

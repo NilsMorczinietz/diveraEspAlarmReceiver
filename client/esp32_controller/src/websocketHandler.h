@@ -68,12 +68,15 @@ void connectWebSocket(const String serverHost = Config::WEBSOCKETS_SERVER_HOST);
  * @brief Periodically checks the WebSocket connection and keeps it alive.
  *
  * @param interval The interval (in milliseconds) between successive checks.
+ * @param maxAttempts The maximum number of reconnection attempts allowed before giving up.
  *
  * This function checks if the WebSocket connection is active and operational.
- * If the connection is lost, it attempts to reconnect. It also sends ping
- * messages and polls for data to maintain the connection.
+ * If the connection is lost, it attempts to reconnect up to the specified maximum number of attempts.
+ * It also sends ping messages and polls for data to maintain the connection.
+ *
+ * @return True if the connection is active or successfully re-established, false if reconnection attempts fail.
  */
-void checkWebSocket(unsigned long interval = 60000);
+boolean checkWebSocket(unsigned long interval = 60000, const int maxAttempts = 5);
 
 /**
  * @brief Retrieves the latest message received via WebSocket.

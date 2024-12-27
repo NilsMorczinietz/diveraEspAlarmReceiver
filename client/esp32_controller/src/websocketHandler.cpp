@@ -85,26 +85,40 @@ void connectWebSocket(const String serverHost)
     }
 }
 
-void checkWebSocket(unsigned long interval)
+boolean checkWebSocket(unsigned long interval, const int maxAttempts)
 {
     static unsigned long lastCheckTime = 0;
+    static int connectionAttempts = 0;
 
     if (millis() - lastCheckTime < interval)
     {
-        return;
+        return true;
     }
 
     lastCheckTime = millis();
 
     if (!webSocketConnected || !client.available())
     {
-        client.connect(Config::WEBSOCKETS_SERVER_HOST);
+        if (connectionAttempts >= maxAttempts)
+        {
+            return false;
+        }
+
+        connectionAttempts++;
+
+        if (client.connect(Config::WEBSOCKETS_SERVER_HOST))
+        {
+            connectionAttempts = 0;
+        }
     }
     else
     {
+        connectionAttempts = 0;
         pingWebSocket();
         pollWebSocket();
     }
+
+    return true;
 }
 
 String getLatestMessage()
