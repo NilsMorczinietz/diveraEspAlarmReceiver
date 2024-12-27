@@ -102,6 +102,8 @@ void AlarmSystem::handleNewMessage(const String &message)
 
 void AlarmSystem::checkAlarm()
 {
+    static unsigned long lastActiveTimestamp = 0;
+
     if (status == Status::alarmOn)
     {
         long waitingTime = Config::ALARM_ON_DURATION * 60 * 1000;
@@ -115,7 +117,7 @@ void AlarmSystem::checkAlarm()
     }
     else if (status == Status::probeOn)
     {
-        long waitingTime = Config::ALARM_ON_DURATION * 60 * 1000;
+        long waitingTime = Config::PROBE_ON_DURATION * 60 * 1000;
         if (millis() - lastTimestamp < waitingTime)
         {
             return;
@@ -136,6 +138,15 @@ void AlarmSystem::checkAlarm()
 
         status = Status::active;
     }
+    else if (status == Status::active)
+    {
+        long interval = Config::UDP_TIMEOUT * 60 * 1000;
+        if (millis() - lastActiveTimestamp >= interval)
+        {
+            sendUDPMessageToAll("off");
+            lastActiveTimestamp = millis();
+        }
+    }
     else
     {
         return;
@@ -154,7 +165,7 @@ AlarmType AlarmSystem::processMessage(const String &message)
     }
 
     // Extrahiere das 'text'-Feld
-    const char* notificationText = doc["text"];
+    const char *notificationText = doc["text"];
     if (notificationText == nullptr)
     {
         Serial.println("Error: 'text' field missing.");
