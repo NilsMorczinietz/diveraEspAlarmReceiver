@@ -21,6 +21,8 @@ void setup()
 
   ledOn(Led::esp);
   Serial.println("System initialized.");
+
+  sendUDPMessageToAll("off");
 }
 
 void loop()

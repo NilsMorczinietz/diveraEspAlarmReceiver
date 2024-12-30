@@ -16,9 +16,9 @@ static KeywordAction keywordActions[] = {
 
     {"F10", AlarmType::alarm},//KZW
     {"KZW", AlarmType::alarm},
-    {"AM03", AlarmType::alarm},
     {"F27", AlarmType::alarm},//Dach
     {"Dach", AlarmType::alarm},
+    {"AM03", AlarmType::alarm},//Nachalarmierung Vollalarm
     {"Vollalarm", AlarmType::alarm},
     {"Stadtalarm", AlarmType::alarm},
 };
