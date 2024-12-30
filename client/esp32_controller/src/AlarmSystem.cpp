@@ -3,20 +3,22 @@
 static KeywordAction keywordActions[] = {
     {"Test", AlarmType::probe},
     {"Probe", AlarmType::probe},
-    {"P01", AlarmType::probe},
+    {"P01", AlarmType::probe},//Probealarm
     {"Probealarm", AlarmType::probe},
     {"Infoalarm", AlarmType::probe},
 
     {"Arbeit", AlarmType::alarm},
-    {"H20", AlarmType::alarm},
+    {"H20", AlarmType::alarm},//Kraftstoff
     {"Kraftstoff", AlarmType::alarm},
 
-    {"F04", AlarmType::alarm},
+    {"F04", AlarmType::alarm},//BMA
     {"BMA", AlarmType::alarm},
 
-    {"F10", AlarmType::alarm},
+    {"F10", AlarmType::alarm},//KZW
     {"KZW", AlarmType::alarm},
     {"AM03", AlarmType::alarm},
+    {"F27", AlarmType::alarm},//Dach
+    {"Dach", AlarmType::alarm},
     {"Vollalarm", AlarmType::alarm},
     {"Stadtalarm", AlarmType::alarm},
 };
