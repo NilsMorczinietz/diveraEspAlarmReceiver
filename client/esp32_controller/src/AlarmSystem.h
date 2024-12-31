@@ -10,6 +10,10 @@ enum class AlarmType
 {
     probe,
     alarm,
+    alarm_red,
+    alarm_green,
+    alarm_blue,
+    alarm_white,
     standard,
     error
 };
@@ -37,8 +41,8 @@ private:
     unsigned long lastTimestamp = 0;
     Status status = Status::off;
 
-    void alarm(AlarmType alarmType = AlarmType::alarm);
-    void probe();
+    void alarm(AlarmType alarmType = AlarmType::alarm, String blinkColor = "");
+    void probe(String blinkColor = "");
     void error();
     AlarmType processMessage(const String &message);
 

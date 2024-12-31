@@ -1,26 +1,26 @@
 #include "AlarmSystem.h"
 
 static KeywordAction keywordActions[] = {
-    {"Test", AlarmType::probe},
-    {"Probe", AlarmType::probe},
-    {"P01", AlarmType::probe},//Probealarm
-    {"Probealarm", AlarmType::probe},
-    {"Infoalarm", AlarmType::probe},
+    {"Test", AlarmType::alarm_white},
+    {"Probe", AlarmType::alarm_white},
+    {"P01", AlarmType::alarm_white}, // Probealarm
+    {"Probealarm", AlarmType::alarm_white},
+    {"Infoalarm", AlarmType::alarm_white},
 
-    {"Arbeit", AlarmType::alarm},
-    {"H20", AlarmType::alarm},//Kraftstoff
-    {"Kraftstoff", AlarmType::alarm},
+    {"Arbeit", AlarmType::alarm_green},
+    {"H20", AlarmType::alarm_green}, // Kraftstoff
+    {"Kraftstoff", AlarmType::alarm_green},
 
-    {"F04", AlarmType::alarm},//BMA
-    {"BMA", AlarmType::alarm},
+    {"F04", AlarmType::alarm_blue}, // BMA
+    {"BMA", AlarmType::alarm_blue},
 
-    {"F10", AlarmType::alarm},//KZW
-    {"KZW", AlarmType::alarm},
-    {"F27", AlarmType::alarm},//Dach
-    {"Dach", AlarmType::alarm},
-    {"AM03", AlarmType::alarm},//Nachalarmierung Vollalarm
-    {"Vollalarm", AlarmType::alarm},
-    {"Stadtalarm", AlarmType::alarm},
+    {"F10", AlarmType::alarm_red}, // KZW
+    {"KZW", AlarmType::alarm_red},
+    {"F27", AlarmType::alarm_red}, // Dach
+    {"Dach", AlarmType::alarm_red},
+    {"AM03", AlarmType::alarm_red}, // Nachalarmierung Vollalarm
+    {"Vollalarm", AlarmType::alarm_red},
+    {"Stadtalarm", AlarmType::alarm_red},
 };
 
 AlarmSystem::AlarmSystem()
@@ -29,7 +29,7 @@ AlarmSystem::AlarmSystem()
     lastTimestamp = 0;
 }
 
-void AlarmSystem::alarm(AlarmType alarmType)
+void AlarmSystem::alarm(AlarmType alarmType, String blinkColor )
 {
     if (status != Status::processing)
     {
@@ -39,11 +39,18 @@ void AlarmSystem::alarm(AlarmType alarmType)
 
     status = Status::alarmOn;
 
-    sendUDPMessageToAll("on");
+    if (blinkColor == "")
+    {
+        sendUDPMessageToAll("on");
+    }
+    else
+    {
+        sendUDPMessageToAll("blink:" + blinkColor);
+    }
     Serial.println("Action: Alarm:  Alarm is on");
 }
 
-void AlarmSystem::probe()
+void AlarmSystem::probe(String blinkColor)
 {
     Serial.println("PROBE");
 
@@ -57,7 +64,14 @@ void AlarmSystem::probe()
 
     status = Status::probeOn;
 
-    sendUDPMessageToAll("on");
+    if (blinkColor == "")
+    {
+        sendUDPMessageToAll("on");
+    }
+    else
+    {
+        sendUDPMessageToAll("blink:" + blinkColor);
+    }
     Serial.println("Action: Probealarm");
 }
 
@@ -79,19 +93,33 @@ void AlarmSystem::handleNewMessage(const String &message)
 
     switch (alarmTypeResult)
     {
+    case AlarmType::alarm_red:
+        alarm(alarmTypeResult, "red");
+        status = Status::alarmOn;
+        break;
+    case AlarmType::alarm_green:
+        alarm(alarmTypeResult, "green");
+        status = Status::alarmOn;
+        break;
+    case AlarmType::alarm_blue:
+        alarm(alarmTypeResult, "blue");
+        status = Status::alarmOn;
+        break;
+    case AlarmType::alarm_white:
+        alarm(alarmTypeResult, "white");
+        status = Status::alarmOn;
+        break;
     case AlarmType::alarm:
-        Serial.println("1");
         alarm(alarmTypeResult);
         status = Status::alarmOn;
         break;
     case AlarmType::probe:
-        Serial.println("2");
-        probe();
+        probe("white");
+        // probe();
         status = Status::probeOn;
         break;
     case AlarmType::standard:
-        Serial.println("3");
-        alarm();
+        alarm(alarmTypeResult, "red");
         break;
     case AlarmType::error:
         error();
