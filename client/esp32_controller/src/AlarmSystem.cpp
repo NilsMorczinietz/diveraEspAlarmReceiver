@@ -19,7 +19,13 @@ static KeywordAction keywordActions[] = {
     {"F27", AlarmType::alarm_red}, // Dach
     {"Dach", AlarmType::alarm_red},
     {"AM03", AlarmType::alarm_red}, // Nachalarmierung Vollalarm
+    {"Nachalarmierung", AlarmType::alarm_red},
     {"Vollalarm", AlarmType::alarm_red},
+    {"F37", AlarmType::alarm_red}, // Garage_gr
+    {"Garage_gr", AlarmType::alarm_red},
+    {"F08", AlarmType::alarm_red}, // Fläche
+    {"Fläche", AlarmType::alarm_red},
+
     {"Stadtalarm", AlarmType::alarm_red},
 };
 
