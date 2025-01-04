@@ -20,7 +20,8 @@ def show_notification(title, text):
             title=title,
             msg=text,
             duration=30,  # Dauer in Sekunden
-            threaded=True
+            threaded=True,
+            icon_path=''
         )
     except Exception as e:
         logging.error(f"Fehler beim Anzeigen der Benachrichtigung: {e}")

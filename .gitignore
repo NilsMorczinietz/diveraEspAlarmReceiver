@@ -6,3 +6,5 @@ desktop/.venv
 desktop/websocket_notifier.log
 desktop/my_secrets.py
 desktop/__pycache__
+desktop/dist
+desktop/build
