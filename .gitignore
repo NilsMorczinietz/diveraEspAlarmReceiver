@@ -1,3 +1,8 @@
 workspace.code-workspace
 client/esp32_controller/src/secrets.h
 client/esp32_worker/src/secrets.h
+desktop/.idea
+desktop/.venv
+desktop/websocket_notifier.log
+desktop/my_secrets.py
+desktop/__pycache__
