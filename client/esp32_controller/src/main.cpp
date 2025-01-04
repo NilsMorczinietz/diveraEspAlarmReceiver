@@ -27,7 +27,7 @@ void setup()
 
 void loop()
 {
-  delay(10);
+  delay(500);
 
   handleWifiReconnection();
 

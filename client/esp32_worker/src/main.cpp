@@ -102,6 +102,7 @@ void Task1(void *pvParameters)
     {
         checkWiFiConnection(); // Ensure Wi-Fi connection is active
         handleIncomingPacket();
+        delay(500);
     }
 }
 
