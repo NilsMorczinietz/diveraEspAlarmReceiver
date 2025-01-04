@@ -1,28 +1,49 @@
-from tkinter import Tk, Label, Button
+from tkinter import Tk, Label, Button, Frame
 
 def show_popup(title, text):
+    background_color = "#001e4c"
+    border_color = "#52000b"
+    border_width = 9  # Breite der Umrandung
+
     def close_window():
         root.destroy()
 
     # Neues Tkinter-Fenster erstellen
     root = Tk()
     root.title(title)
-    root.geometry("400x200")
-    root.configure(bg="red")
+
+    # Fenstergröße inkl. Rahmen (400x200 + 2*border_width für Rahmen)
+    content_width, content_height = 500, 200
+    total_width = content_width + 2 * border_width
+    total_height = content_height + 2 * border_width
+
+    root.geometry(f"{total_width}x{total_height}")
+    root.configure(bg=border_color)  # Rahmenfarbe setzen
+
+    # Frame für den Inhalt des Fensters erstellen
+    content_frame = Frame(root, bg=background_color, width=content_width, height=content_height)
+    content_frame.place(x=border_width, y=border_width)  # Platzierung im Inneren des Rahmens
+
+    # Propagation deaktivieren, um feste Größe zu erzwingen
+    content_frame.pack_propagate(False)
+
+    # Schriftart definieren
+    title_font = ("Arial", 17, "bold")
+    text_font = ("Arial", 12, "bold") 
+    button_font = ("Arial", 10, "bold")
+
+    # Inhalt in das Frame hinzufügen
+    label_title = Label(content_frame, text=title, font=title_font, bg=background_color, fg="white")
+    label_title.pack(pady=(20, 5))  # Abstand oben und unten
+
+    label_text = Label(content_frame, text=text, font=text_font, bg=background_color, fg="white", wraplength=content_width - 40)
+    label_text.pack(pady=5)
+
+    close_button = Button(content_frame, text="SCHLIESSEN", command=close_window, bg="white", fg="black", font=button_font)
+    close_button.pack(pady=20)
 
     # Fenster immer im Vordergrund
     root.attributes('-topmost', True)
-
-    # Titel und Text als Label hinzufügen
-    label_title = Label(root, text=title, font=("Helvetica", 16), bg="red", fg="white")
-    label_title.pack(pady=10)
-
-    label_text = Label(root, text=text, font=("Helvetica", 12), bg="red", fg="white", wraplength=380)
-    label_text.pack(pady=10)
-
-    # Button zum Schließen des Fensters
-    close_button = Button(root, text="Schließen", command=close_window, bg="white", fg="black")
-    close_button.pack(pady=10)
 
     # Fenster anzeigen
     root.mainloop()
