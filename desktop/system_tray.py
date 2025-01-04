@@ -1,31 +1,29 @@
 # system_tray.py
 import threading
 from pystray import Icon, MenuItem, Menu
-from PIL import Image, ImageDraw
+from PIL import Image
 import logging
 
 class TrayIcon:
-    def __init__(self):
+    def __init__(self, connected=False):
         self.icon = None
-        self.connected = False
+        self.connected = connected
 
-    # Funktion zum Erstellen eines einfachen Icons
-    def create_icon(self):
-        # Erstelle ein Bild für das Icon
-        image = Image.new('RGBA', (32, 32), (255, 255, 255, 0))  # Transparenter Hintergrund
-        draw = ImageDraw.Draw(image)
-
-        # Wähle die Farbe des Icons abhängig vom Verbindungsstatus
-        if self.connected:
-            draw.rectangle([(0, 0), (32, 32)], fill="green")  # Grün, wenn verbunden
+    # Funktion zum Laden des benutzerdefinierten Icons
+    def load_icon(self, connected):
+        # Lade das Bild aus einer Datei
+        if connected:
+            # Verwende das "verbunden"-Icon (grün)
+            image = Image.open("./icon_connected.png")  # Dein benutzerdefiniertes Bild für verbunden
         else:
-            draw.rectangle([(0, 0), (32, 32)], fill="red")  # Rot, wenn nicht verbunden
+            # Verwende das "nicht verbunden"-Icon (rot)
+            image = Image.open("./icon_disconnected.png")  # Dein benutzerdefiniertes Bild für getrennt
 
         return image
 
     # Funktion, die das Icon in der Taskleiste anzeigt
     def show_icon(self):
-        self.icon = Icon("websocket_icon", self.create_icon(), menu=Menu(MenuItem('Beenden', self.quit_app)))
+        self.icon = Icon("websocket_icon", self.load_icon(self.connected), menu=Menu(MenuItem('Beenden', self.quit_app)))
         self.icon.run()
 
     # Funktion zum Beenden des Icons
@@ -44,4 +42,4 @@ class TrayIcon:
     def update_connection_status(self, connected):
         self.connected = connected
         if self.icon is not None:
-            self.icon.icon = self.create_icon()  # Update das Icon
+            self.icon.icon = self.load_icon(self.connected)  # Update das Icon
