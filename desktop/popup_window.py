@@ -1,4 +1,6 @@
+import requests
 from tkinter import Tk, Label, Button, Frame
+from my_secrets import divera_accesskey, divera_id
 
 def show_popup(title, text):
     background_color = "#001e4c"
@@ -7,6 +9,14 @@ def show_popup(title, text):
 
     def close_window():
         root.destroy()
+
+    def link_2():
+        url = f"https://app.divera247.com/statusgeber.html?status=2&accesskey={divera_accesskey}&ucr={divera_id}"
+        response = requests.get(url)  # HTTP-GET-Anfrage im Hintergrund ausführen
+        if response.status_code == 200:
+            print("Anfrage erfolgreich ausgeführt")
+        else:
+            print(f"Fehler: {response.status_code}")
 
     # Neues Tkinter-Fenster erstellen
     root = Tk()
@@ -38,6 +48,9 @@ def show_popup(title, text):
 
     label_text = Label(content_frame, text=text, font=text_font, bg=background_color, fg="white", wraplength=content_width - 40)
     label_text.pack(pady=5)
+
+    status_2_button = Button(content_frame, text="Einsatzbereit", command=link_2, bg="white", fg="black", font=button_font)
+    status_2_button.pack(pady=5)
 
     close_button = Button(content_frame, text="SCHLIESSEN", command=close_window, bg="white", fg="black", font=button_font)
     close_button.pack(pady=20)
