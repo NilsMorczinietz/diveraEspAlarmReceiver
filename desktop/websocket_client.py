@@ -38,5 +38,5 @@ async def connect_to_server():
         except Exception as e:
             logging.error(f"Fehler beim Verbindungsaufbau: {e}")
 
-        logging.info("Warte 5 Sekunden vor erneutem Verbindungsversuch...")
-        await asyncio.sleep(5)
+        logging.info("Warte 1 Sekunde vor erneutem Verbindungsversuch...")
+        await asyncio.sleep(1)

@@ -10,11 +10,18 @@ def show_popup(title, text):
     def close_window():
         root.destroy()
 
+    def make_draggable(window):
+        def on_drag(event):
+            window.geometry(f"+{event.x_root}+{event.y_root}")
+        
+        window.bind("<B1-Motion>", on_drag)
+
     def link_2():
         url = f"https://app.divera247.com/statusgeber.html?status=2&accesskey={divera_accesskey}&ucr={divera_id}"
         response = requests.get(url)  # HTTP-GET-Anfrage im Hintergrund ausführen
         if response.status_code == 200:
             print("Anfrage erfolgreich ausgeführt")
+            # close_window()
         else:
             print(f"Fehler: {response.status_code}")
 
@@ -22,12 +29,24 @@ def show_popup(title, text):
     root = Tk()
     root.title(title)
 
+    # Fenster ohne Titelleiste
+    root.overrideredirect(True)  # Entfernt die Fensterleiste (Titlebar)
+
     # Fenstergröße inkl. Rahmen (400x200 + 2*border_width für Rahmen)
     content_width, content_height = 500, 200
     total_width = content_width + 2 * border_width
     total_height = content_height + 2 * border_width
 
-    root.geometry(f"{total_width}x{total_height}")
+    # Berechnung der Bildschirmgröße
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+
+    # Berechnung der Position des Fensters, um es in die Mitte zu setzen
+    position_top = int((screen_height - total_height) / 2)
+    position_left = int((screen_width - total_width) / 2)
+
+    # Fenstergröße und Position setzen
+    root.geometry(f"{total_width}x{total_height}+{position_left}+{position_top}")
     root.configure(bg=border_color)  # Rahmenfarbe setzen
 
     # Frame für den Inhalt des Fensters erstellen
@@ -57,6 +76,9 @@ def show_popup(title, text):
 
     # Fenster immer im Vordergrund
     root.attributes('-topmost', True)
+
+    # Mach das Fenster verschiebbar
+    make_draggable(root)
 
     # Fenster anzeigen
     root.mainloop()
