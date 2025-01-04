@@ -8,3 +8,4 @@ desktop/my_secrets.py
 desktop/__pycache__
 desktop/dist
 desktop/build
+websocket_notifier.log
