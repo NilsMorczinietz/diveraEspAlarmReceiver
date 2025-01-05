@@ -14,15 +14,33 @@ def set_dpi_awareness():
 
 set_dpi_awareness()
 
-def create_round_button(parent, text, bg_color, outline_color, command):
-    """Erstellt einen runden Button in einem Canvas."""
+# Variable zum Speichern des aktuellen aktiven Buttons
+current_active_button = None
+
+def create_round_button(parent, text, bg_color, outline_color, active_color, command):
+    """Erstellt einen runden Button in einem Canvas mit aktivierbarer Hintergrundfarbe."""
     canvas = Canvas(parent, width=110, height=110, bg="#001e4c", highlightthickness=0)
     oval = canvas.create_oval(5, 5, 105, 105, fill=bg_color, outline=outline_color, width=2)
     canvas.create_text(55, 55, text=text, font=("Segoe UI", 5, "bold"), fill="white", tags="button_text")
 
+    # Funktion zur Aktivierung des Buttons
+    def activate():
+        global current_active_button
+        if current_active_button:
+            # Farbe des vorherigen Buttons zurücksetzen
+            current_active_button.itemconfig("button_oval", fill=current_active_button.default_bg)
+        # Setze diesen Button als aktiv
+        canvas.itemconfig("button_oval", fill=active_color)
+        current_active_button = canvas
+        current_active_button.default_bg = bg_color
+        command()  # Führt den Befehl des Buttons aus
+
     # Binde die Klickfunktion an den Button
-    canvas.tag_bind(oval, "<Button-1>", lambda event: command())
-    canvas.tag_bind("button_text", "<Button-1>", lambda event: command())
+    canvas.tag_bind(oval, "<Button-1>", lambda event: activate())
+    canvas.tag_bind("button_text", "<Button-1>", lambda event: activate())
+
+    # Hinzufügen von Tags für die spätere Modifikation
+    canvas.addtag_withtag("button_oval", oval)
 
     return canvas
 
@@ -55,7 +73,7 @@ def show_popup(title, text):
     root.title(title)
 
     # DPI-Skalierung setzen
-    root.tk.call("tk", "scaling", 2.5)  # 2.0 = Hohe DPI-Skalierung
+    root.tk.call("tk", "scaling", 2.5)  # 2.5 = Hohe DPI-Skalierung
 
     root.overrideredirect(True)
 
@@ -94,15 +112,15 @@ def show_popup(title, text):
 
     # Buttons erstellen
     buttons = [
-        {"text": "Einsatzbereit", "bg_color": "#1f2e49", "outline_color": "#134f0d", 
+        {"text": "Einsatzbereit", "bg_color": "#1f2e49", "outline_color": "#134f0d", "active_color": "#0d5f1e",
          "url": f"https://app.divera247.com/statusgeber.html?status=2&accesskey={divera_accesskey}&ucr={divera_id}"},
-        {"text": "5 Minuten", "bg_color": "#1f2e49", "outline_color": "#1d7a12", 
+        {"text": "5 Minuten", "bg_color": "#1f2e49", "outline_color": "#1d7a12", "active_color": "#127a1d",
          "url": f"https://app.divera247.com/statusgeber.html?status=3&accesskey={divera_accesskey}&ucr={divera_id}"},
-        {"text": "10 Minuten", "bg_color": "#1f2e49", "outline_color": "#38962d", 
+        {"text": "10 Minuten", "bg_color": "#1f2e49", "outline_color": "#38962d", "active_color": "#2d9638",
          "url": f"https://app.divera247.com/statusgeber.html?status=4&accesskey={divera_accesskey}&ucr={divera_id}"},
-        {"text": "30 Minuten", "bg_color": "#1f2e49", "outline_color": "#966e2d", 
+        {"text": "30 Minuten", "bg_color": "#1f2e49", "outline_color": "#966e2d", "active_color": "#966e50",
          "url": f"https://app.divera247.com/statusgeber.html?status=5&accesskey={divera_accesskey}&ucr={divera_id}"},
-        {"text": "Nicht verfügbar", "bg_color": "#1f2e49", "outline_color": "#962d2d", 
+        {"text": "Nicht verfügbar", "bg_color": "#1f2e49", "outline_color": "#962d2d", "active_color": "#961414",
          "url": f"https://app.divera247.com/statusgeber.html?status=6&accesskey={divera_accesskey}&ucr={divera_id}"},
     ]
 
@@ -112,6 +130,7 @@ def show_popup(title, text):
             text=btn["text"],
             bg_color=btn["bg_color"],
             outline_color=btn["outline_color"],
+            active_color=btn["active_color"],
             command=lambda url=btn["url"]: make_request(url)
         )
         button.grid(row=0, column=i, padx=5)
