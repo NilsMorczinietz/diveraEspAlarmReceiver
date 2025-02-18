@@ -1,3 +1,5 @@
+## Sketch
+
 ![sketch](images/sketch.png)
 
 The ESP32 workers are connected to LED strips and light up white after corresponding commands and flash depending on the keyword.
