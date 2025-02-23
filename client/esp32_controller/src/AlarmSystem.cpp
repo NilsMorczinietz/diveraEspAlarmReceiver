@@ -14,17 +14,23 @@ static KeywordAction keywordActions[] = {
     {"F04", AlarmType::alarm_blue}, // BMA
     {"BMA", AlarmType::alarm_blue},
 
+    {"F01", AlarmType::alarm_red}, //KFZ
+    {"KFZ", AlarmType::alarm_red},
+    {"F06", AlarmType::alarm_red}, //Kamin
+    {"Kamin", AlarmType::alarm_red},
+    {"F08", AlarmType::alarm_red}, // Fläche
+    {"Fläche", AlarmType::alarm_red},
     {"F10", AlarmType::alarm_red}, // KZW
     {"KZW", AlarmType::alarm_red},
     {"F27", AlarmType::alarm_red}, // Dach
     {"Dach", AlarmType::alarm_red},
-    {"AM03", AlarmType::alarm_red}, // Nachalarmierung Vollalarm
-    {"Nachalarmierung", AlarmType::alarm_red},
-    {"Vollalarm", AlarmType::alarm_red},
     {"F37", AlarmType::alarm_red}, // Garage_gr
     {"Garage_gr", AlarmType::alarm_red},
-    {"F08", AlarmType::alarm_red}, // Fläche
-    {"Fläche", AlarmType::alarm_red},
+    
+    {"AM03", AlarmType::alarm_red}, // Nachalarmierung Vollalarm
+    {"Vollalarm", AlarmType::alarm_red},
+    {"AM01", AlarmType::alarm_red}, // Nachalarmierung Zugalarm
+    {"Zugalarm", AlarmType::alarm_red},
 
     {"Stadtalarm", AlarmType::alarm_red},
 };
